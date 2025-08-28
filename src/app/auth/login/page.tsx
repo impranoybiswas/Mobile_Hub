@@ -1,48 +1,62 @@
 "use client";
 
-import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 export default function LoginPage() {
-  const [form, setForm] = useState({ email: "", password: "" });
   const router = useRouter();
+  const [form, setForm] = useState({ email: "", password: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const res = await signIn("credentials", {
+      redirect: false,
       email: form.email,
       password: form.password,
-      redirect: false,
     });
 
     if (res?.error) {
-      toast.error(res.error);
+      Swal.fire("Error", res.error, "error");
     } else {
-      toast.success("Login successful");
+      toast.success("Logged in successfully!");
       router.push("/");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <Toaster />
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded p-8 space-y-4 w-96">
-        <h2 className="text-2xl font-bold text-center">Login</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md"
+      >
+        <h1 className="text-2xl font-bold mb-4">Login</h1>
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          className="input input-bordered w-full"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          value={form.email}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          className="input input-bordered w-full"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          value={form.password}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
         />
-        <button type="submit" className="btn btn-primary w-full">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
           Login
         </button>
       </form>

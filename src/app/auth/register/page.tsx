@@ -2,66 +2,78 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ name: "", email: "", password: "", photoUrl: "" });
   const router = useRouter();
+  const [form, setForm] = useState({ name: "", email: "", password: "", photoUrl: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
 
-      const data = await res.json();
-      if (!res.ok) {
-        toast.error(data.message);
-        return;
-      }
-
-      Swal.fire("Success!", "রেজিস্ট্রেশন সম্পূর্ণ হয়েছে", "success");
+    const data = await res.json();
+    if (!res.ok) {
+      Swal.fire("Error", data.error, "error");
+    } else {
+      toast.success("Registered successfully!");
       router.push("/login");
-    } catch {
-      toast.error("Server error");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <Toaster />
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded p-8 space-y-4 w-96">
-        <h2 className="text-2xl font-bold text-center">Register</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md"
+      >
+        <h1 className="text-2xl font-bold mb-4">Register</h1>
         <input
           type="text"
+          name="name"
           placeholder="Name"
-          className="input input-bordered w-full"
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          value={form.name}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
         />
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          className="input input-bordered w-full"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          value={form.email}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          className="input input-bordered w-full"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          value={form.password}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
         />
         <input
           type="text"
+          name="photoUrl"
           placeholder="Photo URL"
-          className="input input-bordered w-full"
-          onChange={(e) => setForm({ ...form, photoUrl: e.target.value })}
+          value={form.photoUrl}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
         />
-        <button type="submit" className="btn btn-primary w-full">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
           Register
         </button>
       </form>

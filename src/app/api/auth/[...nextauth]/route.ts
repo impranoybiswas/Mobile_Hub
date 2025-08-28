@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // use JWT-based session
   },
   providers: [
     CredentialsProvider({
@@ -19,20 +19,25 @@ const handler = NextAuth({
         if (!credentials?.email || !credentials.password) return null;
 
         const db = await getDatabase();
-        const users = db.collection("users");
+        const usersCollection = db.collection("users");
 
-        const user = await users.findOne({ email: credentials.email.toLowerCase() });
-        if (!user) return null;
+        const user = await usersCollection.findOne({
+          email: credentials.email.toLowerCase(),
+        });
+        if (!user) throw new Error("User not found");
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) return null;
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+        if (!isValid) throw new Error("Invalid password");
 
+        // Return user object for JWT
         return {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
-          role: user.role,
-          photo: user.photoUrl,
+          photoUrl: user.photoUrl || null,
         };
       },
     }),
@@ -41,19 +46,34 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role;
+        token.name = user.name;
+        token.email = user.email;
+        token.photoUrl = user.photoUrl || null;
       }
       return token;
     },
     async session({ session, token }) {
+      // Typecast token so TS knows its properties
+      const t = token as {
+        id: string;
+        name: string;
+        email: string;
+        photoUrl?: string | null;
+      };
+
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.id = t.id;
+        session.user.name = t.name;
+        session.user.email = t.email;
+        session.user.photoUrl = t.photoUrl || null;
       }
       return session;
     },
   },
+
+  pages: {
+    signIn: "/login",
+  },
 });
 
 export { handler as GET, handler as POST };
-
