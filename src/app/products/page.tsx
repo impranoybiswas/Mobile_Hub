@@ -12,7 +12,7 @@ type Product = {
 // Fetch products using Axios
 async function fetchProducts(): Promise<Product[]> {
   try {
-    const response = await axios.get<Product[]>("http://localhost:3000/api/products");
+    const response = await axios.get<Product[]>("/api/products");
     return response.data;
   } catch (error) {
     console.error("Failed to fetch products:", error);

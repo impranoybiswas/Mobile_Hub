@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mobile Hub
 
-## Getting Started
+> **Mobile Hub** — A modern e-commerce web application to buy smartphones and mobile accessories. Built with Next.js, TypeScript, Tailwind CSS, NextAuth, MongoDB, and essential utilities such as `bcryptjs`, `sweetalert2`, and `react-hot-toast`.
 
-First, run the development server:
+> Link to the [live demo](https://mobile-hub-ecru.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+------
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Table of Contents
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [About](#about)
+- [Features](#features)
+- [Tech stack & Packages](#tech-stack--packages)
+- [Repository structure](#repository-structure)
+- [Installation & Setup](#installation--setup)
+  - [Environment variables](#environment-variables)
+  - [Scripts](#scripts)
+- [Key configuration snippets](#key-configuration-snippets)
+  - [TypeScript](#typescript)
+  - [Tailwind CSS](#tailwind-css)
+  - [MongoDB connection helper](#mongodb-connection-helper)
+  - [NextAuth (example)](#nextauth-example)
+  - [Using bcryptjs for password hashing](#using-bcryptjs-for-password-hashing)
+  - [Showing notifications with react-hot-toast](#showing-notifications-with-react-hot-toast)
+  - [Using SweetAlert2 for confirmations](#using-sweetalert2-for-confirmations)
+- [Development notes & best practices](#development-notes--best-practices)
+- [Deployment](#deployment)
+- [License](#license)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## About
 
-To learn more about Next.js, take a look at the following resources:
+**Mobile Hub** is a sample mobile-phone storefront intended as a starter template for developers. The repository demonstrates an idiomatic setup for a production-capable Next.js + TypeScript application with authentication (NextAuth) and a MongoDB backend. It includes common developer conveniences like Tailwind CSS for design, `react-hot-toast` for transient notifications, and `sweetalert2` for friendly modal confirmations.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- User sign-up / sign-in (NextAuth)
+- Password hashing (bcryptjs)
+- Product listing, product details, shopping cart basic flow (examples)
+- Admin area to CRUD products (protected routes)
+- Client-side notifications (react-hot-toast)
+- Confirmation dialogs for destructive actions (SweetAlert2)
+- Responsive UI with Tailwind CSS
+- TypeScript-ready codebase
 
-## Deploy on Vercel
+## Tech stack & Packages
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project uses the following notable dependencies (recommended versions shown as example — update as needed):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `next` — React framework for production (e.g. `14.x` or `15.x`)
+- `react` / `react-dom` — peer dependencies of Next.js
+- `typescript` — static typing for JS
+- `tailwindcss` — utility-first CSS framework
+- `next-auth` — authentication for Next.js
+- `mongodb` — official MongoDB driver
+- `bcryptjs` — password hashing on server side
+- `react-hot-toast` — lightweight toast notifications
+- `sweetalert2` — nicer alert/confirmation modals
+
+### Example `package.json` `dependencies` excerpt
+
+```json
+{
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "next-auth": "^5.0.0",
+    "mongodb": "^5.10.0",
+    "bcryptjs": "^2.4.3",
+    "react-hot-toast": "^2.4.0",
+    "sweetalert2": "^11.7.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "tailwindcss": "^4.0.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24"
+  }
+}
+
+
+/mobile-hub
+├─ .next
+├─ node_modules
+├─ public
+│  ├─ images
+│  └─ favicon.ico
+├─ src
+│  ├─ app
+│  │  ├─ layout.tsx
+│  │  ├─ globals.css
+│  │  ├─ page.tsx            # Home / Landing
+│  │  ├─ products
+│  │  │  ├─ page.tsx         # Product listing
+│  │  │  └─ [id]
+│  │  │     └─ page.tsx      # Product detail
+│  │  ├─ auth
+│  │  │  └─ sign-in.tsx
+│  │  └─ dashboard
+│  │     └─ page.tsx         # protected admin area
+│  ├─ components
+│  │  ├─ Header.tsx
+│  │  ├─ Footer.tsx
+│  │  ├─ ProductCard.tsx
+│  │  └─ CartWidget.tsx
+│  ├─ lib
+│  │  ├─ mongodb.ts         # Mongo connection helper
+│  │  └─ auth.ts            # NextAuth options
+│  ├─ hooks
+│  │  └─ useCart.ts
+│  ├─ pages (if using pages router)
+│  ├─ styles
+│  │  └─ tailwind.css
+│  ├─ types
+│  │  └─ index.d.ts
+│  └─ utils
+│     ├─ bcrypt.ts          # wrapper for bcrypt usage
+│     └─ validators.ts
+├─ .env.example
+├─ next.config.js
+├─ tailwind.config.cjs
+├─ postcss.config.cjs
+├─ tsconfig.json
+├─ package.json
+└─ README.md
