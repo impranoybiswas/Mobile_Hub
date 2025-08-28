@@ -17,7 +17,7 @@ export default function Navbar() {
                 <Link href="/products">Products</Link>
             </div>
             <div className="flex-1 flex justify-end items-center">
-                <Link className='btn' href="/login">Login</Link>
+                <Link className='btn' href="/auth/login">Login</Link>
             </div>
         </section>
 
