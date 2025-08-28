@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ message: "User registered successfully." }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
+  } catch (error : unknown) {
+    return NextResponse.json({ error: "Something went wrong." + error }, { status: 500 });
   }
 }

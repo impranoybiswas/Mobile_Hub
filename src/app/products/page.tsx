@@ -1,6 +1,7 @@
 // src/app/products/page.tsx
 import React from "react";
 import axios from "axios";
+import Image from "next/image";
 
 type Product = {
   _id: string;
@@ -32,7 +33,7 @@ const ProductsPage = async () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {products.map((product) => (
   <div key={product._id} className="border p-4 rounded-lg shadow">
-    <img src={product.thumbnail} alt={product.name} className="w-full h-48 object-cover rounded" />
+    <Image src={product.thumbnail} alt={product.name} className="w-full h-48 object-cover rounded" />
     <h2 className="font-semibold text-xl mt-2">{product.name}</h2>
     <p className="font-bold mt-1">BDT {product.price}</p>
     <a

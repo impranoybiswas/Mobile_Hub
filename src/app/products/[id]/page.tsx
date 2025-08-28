@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import Image from "next/image";
 
 type Product = {
   _id: string;
@@ -34,7 +35,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
 
   return (
     <div className="p-8 max-w-3xl mx-auto">
-      <img src={product.thumbnail} alt={product.name} className="w-full h-64 object-cover rounded mb-6" />
+      <Image src={product.thumbnail} alt={product.name} className="w-full h-64 object-cover rounded mb-6" />
       <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
       <p className="text-gray-600 mb-4">{product.brand}</p>
       <p className="text-xl font-bold mb-4">BDT {product.price}</p>
